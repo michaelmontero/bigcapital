@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
 import { Intent, Alert } from '@blueprintjs/core';
-import { queryCache } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { FormattedMessage as T, AppToaster } from '@/components';
 
 import { withAlertStoreConnect } from '@/containers/Alert/withAlertStoreConnect';
@@ -21,6 +21,7 @@ function AccountBulkActivateAlert({
   // TODO: Implement bulk activate accounts hook and use it here
   requestBulkActivateAccounts,
 }) {
+  const queryClient = useQueryClient();
   const [isLoading, setLoading] = useState(false);
   const selectedRowsCount = 0;
 
@@ -38,7 +39,7 @@ function AccountBulkActivateAlert({
           message: intl.get('the_accounts_has_been_successfully_activated'),
           intent: Intent.SUCCESS,
         });
-        queryCache.invalidateQueries('accounts-table');
+        queryClient.invalidateQueries('accounts-table');
       })
       .catch((errors) => { })
       .finally(() => {
