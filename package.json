@@ -8,9 +8,10 @@
     "dev:webapp": "lerna run dev --scope \"@bigcapital/webapp\" --scope \"@bigcapital/utils\" --scope \"@bigcapital/pdf-templates\"",
     "build:webapp": "lerna run build --scope \"@bigcapital/webapp\" --scope \"@bigcapital/utils\" --scope \"@bigcapital/pdf-templates\"",
     "dev:server": "lerna run dev --scope \"@bigcapital/server\" --scope \"@bigcapital/utils\" --scope \"@bigcapital/pdf-templates\" --scope \"@bigcapital/email-components\"",
-    "build:server": "lerna run build --scope \"@bigcapital/server\" --scope \"@bigcapital/utils\" --scope \"@bigcapital/pdf-templates\" --scope \"@bigcapital/email-components\"",
+    "build:server": "lerna run build --scope \"@bigcapital/server\" --include-dependencies",
     "serve:server": "lerna run serve --scope \"@bigcapital/server\" --scope \"@bigcapital/utils\"",
     "server:start": "lerna run start:dev --scope \"@bigcapital/server\"",
+    "start": "lerna run start:prod --scope \"@bigcapital/server\"",
     "test:watch": "lerna run test:watch",
     "test:e2e": "lerna run test:e2e",
     "start:debug": "lerna run start:debug",
@@ -35,7 +36,7 @@
     "pnpm": "^9.0.5"
   },
   "engines": {
-    "node": "16.x || 17.x || 18.x"
+    "node": "18.x"
   },
   "husky": {
     "hooks": {
