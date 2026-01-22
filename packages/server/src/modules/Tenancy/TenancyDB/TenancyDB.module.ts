@@ -22,8 +22,13 @@ export const TenancyDatabaseProxyProvider = ClsModule.forFeatureAsync({
     if (cachedInstance) {
       return cachedInstance;
     }
+    // Ensure mysql2 is used (required for MySQL 8.0+ authentication)
+    const client = configService.get('tenantDatabase.client') || 'mysql2';
+    if (client !== 'mysql2') {
+      console.warn(`Warning: Expected mysql2 client but got ${client}. Forcing mysql2.`);
+    }
     const knexInstance = knex({
-      client: configService.get('tenantDatabase.client'),
+      client: 'mysql2', // Force mysql2 to support MySQL 8.0+ authentication
       connection: {
         host: configService.get('tenantDatabase.host'),
         user: configService.get('tenantDatabase.user'),

@@ -135,14 +135,17 @@ import { AppThrottleModule } from './AppThrottle.module';
     AppThrottleModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        connection: {
-          host: configService.get('QUEUE_HOST') || configService.get('redis.host'),
-          port: configService.get('QUEUE_PORT') || configService.get('redis.port'),
-          password: configService.get('QUEUE_PASSWORD') || configService.get('redis.password'),
-          db: configService.get('QUEUE_DB') || configService.get('redis.db'),
-        },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const redisConfig = configService.get('redis');
+        return {
+          connection: {
+            host: configService.get('QUEUE_HOST') || redisConfig?.host,
+            port: configService.get('QUEUE_PORT') || redisConfig?.port,
+            password: configService.get('QUEUE_PASSWORD') || redisConfig?.password,
+            db: configService.get('QUEUE_DB') || redisConfig?.db,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     ClsModule.forRoot({
@@ -158,14 +161,17 @@ import { AppThrottleModule } from './AppThrottle.module';
     }),
     RedisModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        config: {
-          host: configService.get('redis.host'),
-          port: configService.get('redis.port'),
-          password: configService.get('redis.password'),
-          db: configService.get('redis.db'),
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const redisConfig = configService.get('redis');
+        return {
+          config: {
+            host: redisConfig?.host,
+            port: redisConfig?.port,
+            password: redisConfig?.password,
+            db: redisConfig?.db,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),

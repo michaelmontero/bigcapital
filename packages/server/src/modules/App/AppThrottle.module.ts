@@ -30,10 +30,11 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
           };
         }
 
-        const host = configService.get<string>('redis.host');
-        const port = Number(configService.get<number>('redis.port'));
-        const password = configService.get<string>('redis.password');
-        const db = configService.get<number>('redis.db');
+        const redisConfig = configService.get('redis');
+        const host = redisConfig?.host;
+        const port = Number(redisConfig?.port);
+        const password = redisConfig?.password;
+        const db = redisConfig?.db;
 
         const globalTtl = configService.get<number>('throttle.global.ttl');
         const globalLimit = configService.get<number>('throttle.global.limit');

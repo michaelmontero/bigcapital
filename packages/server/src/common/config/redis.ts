@@ -15,7 +15,7 @@ function parseRedisUrl(url: string) {
 }
 
 export default registerAs('redis', () => {
-  // Support REDIS_URL (Railway standard format: redis://:password@host:port)
+  // Support REDIS_URL (Railway format: redis://:password@host:port)
   if (!process.env.REDIS_URL) {
     throw new Error('REDIS_URL environment variable is required');
   }

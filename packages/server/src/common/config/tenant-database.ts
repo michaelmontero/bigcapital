@@ -29,7 +29,7 @@ export default registerAs('tenantDatabase', () => {
   }
 
   return {
-    client: 'mysql',
+    client: 'mysql2',
     host: parsed.host,
     port: parsed.port,
     user: parsed.user,

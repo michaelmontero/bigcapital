@@ -12,7 +12,7 @@ export abstract class BaseCommand extends CommandRunner {
 
   protected initSystemKnex(): any {
     return Knex({
-      client: this.configService.get('systemDatabase.client'),
+      client: this.configService.get('systemDatabase.client') || 'mysql2',
       connection: {
         host: this.configService.get('systemDatabase.host'),
         user: this.configService.get('systemDatabase.user'),
@@ -33,7 +33,7 @@ export abstract class BaseCommand extends CommandRunner {
 
   protected initTenantKnex(organizationId: string = ''): any {
     return Knex({
-      client: this.configService.get('tenantDatabase.client'),
+      client: this.configService.get('tenantDatabase.client') || 'mysql2',
       connection: {
         host: this.configService.get('tenantDatabase.host'),
         user: this.configService.get('tenantDatabase.user'),

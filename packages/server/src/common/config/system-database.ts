@@ -28,7 +28,7 @@ export default registerAs('systemDatabase', () => {
   }
 
   return {
-    client: 'mysql',
+    client: 'mysql2',
     host: parsed.host,
     port: parsed.port,
     user: parsed.user,
