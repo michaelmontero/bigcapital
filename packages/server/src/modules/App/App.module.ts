@@ -163,6 +163,19 @@ import { AppThrottleModule } from './AppThrottle.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const redisConfig = configService.get('redis');
+        
+        // Log Redis configuration for debugging
+        console.log('RedisModule configuration:', {
+          host: redisConfig?.host,
+          port: redisConfig?.port,
+          db: redisConfig?.db,
+          hasPassword: !!redisConfig?.password,
+        });
+        
+        if (!redisConfig?.host) {
+          console.error('ERROR: Redis host is missing! Check REDIS_URL environment variable.');
+        }
+        
         return {
           config: {
             host: redisConfig?.host,

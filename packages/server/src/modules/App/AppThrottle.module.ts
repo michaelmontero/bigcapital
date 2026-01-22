@@ -35,6 +35,18 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
         const port = Number(redisConfig?.port);
         const password = redisConfig?.password;
         const db = redisConfig?.db;
+        
+        // Log Redis configuration for throttler
+        console.log('Throttler Redis configuration:', {
+          host,
+          port,
+          db,
+          hasPassword: !!password,
+        });
+        
+        if (!host) {
+          console.error('ERROR: Redis host is missing for Throttler! Check REDIS_URL environment variable.');
+        }
 
         const globalTtl = configService.get<number>('throttle.global.ttl');
         const globalLimit = configService.get<number>('throttle.global.limit');

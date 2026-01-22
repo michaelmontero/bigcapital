@@ -25,9 +25,9 @@ const providers = [
           password: configService.get('systemDatabase.password'),
           database: configService.get('systemDatabase.databaseName'),
           charset: 'utf8',
-          connectTimeout: 60000, // 60 seconds
-          acquireTimeout: 60000, // 60 seconds
-          timeout: 60000, // 60 seconds
+          connectTimeout: 10000, // 10 seconds - time to establish connection
+          enableKeepAlive: true,
+          keepAliveInitialDelay: 0,
         },
       migrations: {
         directory: configService.get('systemDatabase.migrationDir'),
