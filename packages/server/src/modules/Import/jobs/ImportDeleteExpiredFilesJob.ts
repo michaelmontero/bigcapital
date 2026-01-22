@@ -46,7 +46,7 @@ export class ImportDeleteExpiredFilesJobs {
     }
   }
 
-  private initSystemKnex(): Knex {
+  private initSystemKnex(): any {
     return Knex({
       client: 'mysql2',
       connection: {
