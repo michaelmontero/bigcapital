@@ -1,7 +1,14 @@
 // @ts-nocheck
 import axios from 'axios';
 import { store } from '@/store/createStore';
-const http = axios.create();
+
+// Get API base URL from environment variable (for cross-origin requests)
+// If VITE_API_URL is set, use it; otherwise use relative URLs (same origin)
+const apiBaseUrl = process.env.VITE_API_URL || '';
+
+const http = axios.create({
+  baseURL: apiBaseUrl,
+});
 
 
 http.interceptors.request.use((request) => {

@@ -21,8 +21,11 @@ export default function useApiRequest() {
   const organizationId = useAuthOrganizationId();
 
   const http = React.useMemo(() => {
-    // Axios instance.
-    const instance = axios.create();
+    // Axios instance with base URL from environment (for cross-origin requests)
+    const apiBaseUrl = process.env.VITE_API_URL || '';
+    const instance = axios.create({
+      baseURL: apiBaseUrl,
+    });
 
     // Request interceptors.
     instance.interceptors.request.use(
@@ -122,8 +125,11 @@ export default function useApiRequest() {
 
 export function useAuthApiRequest() {
   const http = React.useMemo(() => {
-    // Axios instance.
-    return axios.create();
+    // Axios instance with base URL from environment (for cross-origin requests)
+    const apiBaseUrl = process.env.VITE_API_URL || '';
+    return axios.create({
+      baseURL: apiBaseUrl,
+    });
   }, []);
 
   return React.useMemo(

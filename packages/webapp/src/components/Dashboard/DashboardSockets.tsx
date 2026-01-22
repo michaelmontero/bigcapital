@@ -10,7 +10,9 @@ export function DashboardSockets() {
   const client = useQueryClient();
 
   useEffect(() => {
-    socket.current = io('/', { path: '/socket' });
+    // Use VITE_API_URL if set (for cross-origin), otherwise use relative URL
+    const apiUrl = process.env.VITE_API_URL || '/';
+    socket.current = io(apiUrl, { path: '/socket' });
   
     socket.current.on('NEW_TRANSACTIONS_DATA', () => {
       client.invalidateQueries(t.ACCOUNTS);

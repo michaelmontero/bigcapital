@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ClsMiddleware } from 'nestjs-cls';
+import { ConfigService } from '@nestjs/config';
 import * as path from 'path';
 import './utils/moment-mysql';
 import { AppModule } from './modules/App/App.module';
@@ -17,6 +18,16 @@ async function bootstrap() {
   });
   app.set('query parser', 'extended');
   app.setGlobalPrefix('/api');
+
+  // Configure CORS
+  const configService = app.get(ConfigService);
+  const corsConfig = configService.get('app.cors');
+  app.enableCors({
+    origin: corsConfig?.origins || '*',
+    credentials: corsConfig?.credentials || false,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'organization-id', 'Accept-Language'],
+  });
 
   // create and mount the middleware manually here
   app.use(new ClsMiddleware({}).use);
