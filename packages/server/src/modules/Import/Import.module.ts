@@ -15,16 +15,17 @@ import { ImportFileCommon } from './ImportFileCommon';
 import { ResourceModule } from '../Resource/Resource.module';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
+import { SystemModelsModule } from '../System/SystemModels/SystemModels.module';
 import { ImportController } from './Import.controller';
 import { ImportableRegistry } from './ImportableRegistry';
-import { InjectSystemModel } from '../System/SystemModels/SystemModels.module';
+import { RegisterTenancyModel } from '../Tenancy/TenancyModels/Tenancy.module';
 import { ImportModel } from './models/Import';
 import { ImportDeleteExpiredFilesJobs } from './jobs/ImportDeleteExpiredFilesJob';
 
-const models = [InjectSystemModel(ImportModel)];
+const models = [RegisterTenancyModel(ImportModel)];
 
 @Module({
-  imports: [ResourceModule, TenancyModule, AccountsModule],
+  imports: [ResourceModule, TenancyModule, AccountsModule, SystemModelsModule],
   providers: [
     ...models,
     ImportAls,

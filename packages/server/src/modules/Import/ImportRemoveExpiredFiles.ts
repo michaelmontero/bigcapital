@@ -3,20 +3,24 @@ import * as bluebird from 'bluebird';
 import { deleteImportFile } from './_utils';
 import { Inject, Injectable } from '@nestjs/common';
 import { ImportModel } from './models/Import';
+import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 
 @Injectable()
 export class ImportDeleteExpiredFiles {
   constructor(
     @Inject(ImportModel.name)
-    private readonly importModel: typeof ImportModel,
+    private readonly importModel: TenantModelProxy<typeof ImportModel>,
   ) {}
   /**
    * Delete expired files.
    */
   async deleteExpiredFiles() {
     const yesterday = moment().subtract(1, 'hour').format('YYYY-MM-DD HH:mm');
+    
+    // Get the model instance for the current tenant context
+    const model = this.importModel() as any;
 
-    const expiredImports = await this.importModel
+    const expiredImports = await model
       .query()
       .where('createdAt', '<', yesterday);
 
@@ -31,7 +35,10 @@ export class ImportDeleteExpiredFiles {
       (expiredImport) => expiredImport.id,
     );
     if (expiredImportsIds.length > 0) {
-      await this.importModel.query().whereIn('id', expiredImportsIds).delete();
+      await model
+        .query()
+        .whereIn('id', expiredImportsIds)
+        .delete();
     }
   }
 }
