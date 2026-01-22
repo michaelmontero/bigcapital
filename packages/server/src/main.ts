@@ -22,11 +22,35 @@ async function bootstrap() {
   // Configure CORS
   const configService = app.get(ConfigService);
   const corsConfig = configService.get('app.cors');
+  
+  // Get CORS origins - support array or string
+  let corsOrigins: string | string[] | boolean = '*';
+  if (corsConfig?.origins) {
+    corsOrigins = corsConfig.origins;
+  } else if (process.env.CORS_ORIGINS) {
+    // Fallback to direct env var if config not loaded
+    const envOrigins = process.env.CORS_ORIGINS.trim();
+    if (envOrigins === '*') {
+      corsOrigins = '*';
+    } else {
+      corsOrigins = envOrigins.split(',').map(origin => origin.trim()).filter(Boolean);
+    }
+  }
+  
+  const corsCredentials = corsConfig?.credentials || process.env.CORS_CREDENTIALS === 'true' || false;
+  
+  console.log('CORS Configuration:', {
+    origins: corsOrigins,
+    credentials: corsCredentials,
+    envCorsOrigins: process.env.CORS_ORIGINS,
+  });
+  
   app.enableCors({
-    origin: corsConfig?.origins || '*',
-    credentials: corsConfig?.credentials || false,
+    origin: corsOrigins,
+    credentials: corsCredentials,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'organization-id', 'Accept-Language'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'organization-id', 'Accept-Language', 'x-access-token'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // create and mount the middleware manually here
