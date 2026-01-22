@@ -25,9 +25,14 @@ import { ImportDeleteExpiredFilesJobs } from './jobs/ImportDeleteExpiredFilesJob
 const models = [RegisterTenancyModel(ImportModel)];
 
 @Module({
-  imports: [ResourceModule, TenancyModule, AccountsModule, SystemModelsModule],
-  providers: [
+  imports: [
     ...models,
+    ResourceModule,
+    TenancyModule,
+    AccountsModule,
+    SystemModelsModule,
+  ],
+  providers: [
     ImportAls,
     ImportSampleService,
     ImportResourceApplication,
