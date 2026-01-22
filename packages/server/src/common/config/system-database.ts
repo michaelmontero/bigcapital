@@ -33,7 +33,9 @@ export default registerAs('systemDatabase', () => {
     port: parsed.port,
     user: parsed.user,
     password: parsed.password,
-    databaseName: parsed.databaseName,
+    // Use DATABASE_URL database name by default (Railway uses 'railway' by default)
+    // Override with SYSTEM_DB_NAME if explicitly set
+    databaseName: parsed.databaseName || process.env.SYSTEM_DB_NAME,
     migrationDir: process.env.SYSTEM_DB_MIGRATION_DIR || './src/database/system/migrations',
     seedsDir: process.env.SYSTEM_DB_SEEDS_DIR || './src/database/system/seeds',
   };
