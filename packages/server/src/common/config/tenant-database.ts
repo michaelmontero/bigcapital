@@ -16,31 +16,24 @@ function parseDatabaseUrl(url: string) {
 }
 
 export default registerAs('tenantDatabase', () => {
-  // Support DATABASE_URL or TENANT_DATABASE_URL (Railway standard format: mysql://user:password@host:port/database)
-  const databaseUrl = process.env.TENANT_DATABASE_URL || process.env.DATABASE_URL;
-  if (databaseUrl) {
-    const parsed = parseDatabaseUrl(databaseUrl);
-    if (parsed) {
-      return {
-        client: 'mysql',
-        host: parsed.host,
-        port: parsed.port,
-        user: parsed.user,
-        password: parsed.password,
-        dbNamePrefix: process.env.TENANT_DB_NAME_PERFIX || 'bigcapital_tenant_',
-        migrationsDir: path.join(__dirname, '../../database/tenant/migrations'),
-        seedsDir: path.join(__dirname, '../../database/tenant/seeds/core'),
-      };
-    }
+  // Uses DATABASE_URL (same server, different database names per tenant)
+  // Tenants are created as separate databases: bigcapital_tenant_{organizationId}
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error('DATABASE_URL environment variable is required');
   }
 
-  // Fallback to individual environment variables
+  const parsed = parseDatabaseUrl(databaseUrl);
+  if (!parsed) {
+    throw new Error('Invalid DATABASE_URL format. Expected: mysql://user:password@host:port/database');
+  }
+
   return {
     client: 'mysql',
-    host: process.env.TENANT_DB_HOST || process.env.DB_HOST,
-    port: parseInt(process.env.TENANT_DB_PORT || process.env.DB_PORT || '3306', 10),
-    user: process.env.TENANT_DB_USER || process.env.DB_USER,
-    password: process.env.TENANT_DB_PASSWORD || process.env.DB_PASSWORD,
+    host: parsed.host,
+    port: parsed.port,
+    user: parsed.user,
+    password: parsed.password,
     dbNamePrefix: process.env.TENANT_DB_NAME_PERFIX || 'bigcapital_tenant_',
     migrationsDir: path.join(__dirname, '../../database/tenant/migrations'),
     seedsDir: path.join(__dirname, '../../database/tenant/seeds/core'),

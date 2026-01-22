@@ -30,8 +30,8 @@ import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
           };
         }
 
-        const host = configService.get<string>('redis.host') || 'localhost';
-        const port = Number(configService.get<number>('redis.port') || 6379);
+        const host = configService.get<string>('redis.host');
+        const port = Number(configService.get<number>('redis.port'));
         const password = configService.get<string>('redis.password');
         const db = configService.get<number>('redis.db');
 

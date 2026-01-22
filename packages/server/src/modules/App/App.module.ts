@@ -137,10 +137,10 @@ import { AppThrottleModule } from './AppThrottle.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         connection: {
-          host: configService.get('QUEUE_HOST') || configService.get('redis.host') || 'localhost',
-          port: configService.get('QUEUE_PORT') || configService.get('redis.port') || 6379,
+          host: configService.get('QUEUE_HOST') || configService.get('redis.host'),
+          port: configService.get('QUEUE_PORT') || configService.get('redis.port'),
           password: configService.get('QUEUE_PASSWORD') || configService.get('redis.password'),
-          db: configService.get('QUEUE_DB') || configService.get('redis.db') || 0,
+          db: configService.get('QUEUE_DB') || configService.get('redis.db'),
         },
       }),
       inject: [ConfigService],
@@ -160,10 +160,10 @@ import { AppThrottleModule } from './AppThrottle.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         config: {
-          host: configService.get('redis.host') || 'localhost',
-          port: configService.get('redis.port') || 6379,
+          host: configService.get('redis.host'),
+          port: configService.get('redis.port'),
           password: configService.get('redis.password'),
-          db: configService.get('redis.db') || 0,
+          db: configService.get('redis.db'),
         },
       }),
       inject: [ConfigService],
