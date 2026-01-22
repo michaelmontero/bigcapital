@@ -25,6 +25,9 @@ const providers = [
           password: configService.get('systemDatabase.password'),
           database: configService.get('systemDatabase.databaseName'),
           charset: 'utf8',
+          connectTimeout: 60000, // 60 seconds
+          acquireTimeout: 60000, // 60 seconds
+          timeout: 60000, // 60 seconds
         },
       migrations: {
         directory: configService.get('systemDatabase.migrationDir'),
@@ -41,7 +44,15 @@ const providers = [
     provide: SystemKnexConnection,
     inject: [SystemKnexConnectionConfigure],
     useFactory: (knexConfig) => {
-      return Knex(knexConfig);
+      const knex = Knex(knexConfig);
+      // Log connection details (without password) for debugging
+      console.log('System database connection configured:', {
+        host: knexConfig.connection.host,
+        port: knexConfig.connection.port,
+        database: knexConfig.connection.database,
+        user: knexConfig.connection.user,
+      });
+      return knex;
     },
   },
 ];

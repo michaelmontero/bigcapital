@@ -21,10 +21,42 @@ export class ImportDeleteExpiredFilesJobs {
     try {
       console.log('Delete expired import files has started.');
       
+      // Verify TenantModel is connected to a knex instance
+      const modelKnex = (this.tenantModel as any).knex();
+      if (!modelKnex) {
+        console.error('TenantModel is not connected to a Knex instance. Skipping job.');
+        return;
+      }
+      
       // Get all initialized tenants using TenantModel
-      const tenants = await (this.tenantModel as any)
-        .query()
-        .whereNotNull('initializedAt');
+      // Add timeout and error handling for connection issues
+      let tenants;
+      try {
+        // Use a shorter timeout for the query itself
+        tenants = await Promise.race([
+          (this.tenantModel as any).query().whereNotNull('initializedAt'),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Query timeout after 10 seconds')), 10000)
+          )
+        ]) as any[];
+      } catch (error: any) {
+        // Log more details about the error
+        if (error.code === 'ETIMEDOUT' || error.errorno === 'ETIMEDOUT') {
+          console.error('Database connection timeout. This may indicate network issues or the database is not reachable.');
+          console.error('Connection details:', {
+            host: modelKnex?.client?.config?.connection?.host,
+            database: modelKnex?.client?.config?.connection?.database,
+          });
+        } else {
+          console.error('Error fetching tenants:', error.message || error);
+        }
+        return; // Exit early if we can't connect to the database
+      }
+      
+      if (!tenants || tenants.length === 0) {
+        console.log('No tenants found to process.');
+        return;
+      }
       
       // Process each tenant
       for (const tenant of tenants) {
